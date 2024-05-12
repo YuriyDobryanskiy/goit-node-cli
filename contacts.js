@@ -1,31 +1,30 @@
-const { v4: uuidv4 } = require("uuid");
-
-const fs = require("node:fs/promises");
-const path = require("node:path");
+import * as fs from "node:fs/promises";
+import path from "node:path";
+import crypto from "node:crypto";
 
 const contactsPath = path.resolve("db", "contacts.json");
 
-async function listContacts() {
+export async function listContacts() {
   const data = await fs.readFile(contactsPath, {
     encoding: "utf-8",
   });
   return JSON.parse(data);
 }
 
-async function getContactById(contactId) {
+export async function getContactById(contactId) {
   const contacts = await listContacts();
   return contacts.find((contact) => contact.id === contactId) || null;
 }
 
-async function addContact(name, email, phone) {
+export async function addContact(name, email, phone) {
   let contacts = await listContacts();
-  const newContact = { id: uuidv4(), name, email, phone };
+  const newContact = { id: crypto.randomUUID(), name, email, phone };
   contacts.push(newContact);
   await fs.writeFile(contactsPath, JSON.stringify(contacts));
   return newContact;
 }
 
-async function removeContact(contactId) {
+export async function removeContact(contactId) {
   let contacts = await listContacts();
   const index = contacts.findIndex((contact) => contact.id === contactId);
   if (index !== -1) {
@@ -35,5 +34,3 @@ async function removeContact(contactId) {
   }
   return null;
 }
-
-module.exports = { listContacts, getContactById, addContact, removeContact };

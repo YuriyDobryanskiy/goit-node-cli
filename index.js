@@ -1,10 +1,10 @@
-const { program } = require("commander");
-const {
+import { program } from "commander";
+import {
   listContacts,
   getContactById,
   addContact,
   removeContact,
-} = require("./contacts.js");
+} from "./contacts.js";
 
 program
   .option("-a, --action <type>", "choose action")
@@ -14,25 +14,26 @@ program
   .option("-p, --phone <type>", "user phone");
 
 program.parse();
-
 const options = program.opts();
 
 async function invokeAction({ action, id, name, email, phone }) {
   switch (action) {
     case "list":
-      await listContacts().then(console.log);
+      await listContacts().then(console.log).catch(console.error);
       break;
 
     case "get":
-      await getContactById(id).then(console.log);
+      await getContactById(id).then(console.log).catch(console.error);
       break;
 
     case "add":
-      await addContact(name, email, phone).then(console.log);
+      await addContact(name, email, phone)
+        .then(console.log)
+        .catch(console.error);
       break;
 
     case "remove":
-      await removeContact(id).then(console.log);
+      await removeContact(id).then(console.log).catch(console.error);
       break;
 
     default:
@@ -40,3 +41,8 @@ async function invokeAction({ action, id, name, email, phone }) {
   }
 }
 invokeAction(options);
+
+// node index.js -a list
+// node index.js -a get -i 05olLMgyVQdWRwgKfg5J6
+// node index.js -a add -n Mango -e mango@gmail.com -p 322-22-22
+// node index.js -a remove -i 1DEXoP8AuCGYc1YgoQ6hw
